@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/css/sample.css">
+    </head>
+    <div id="app">
+        <div class="container">
+            <div class="item_header">
+                <div class="item_detail">商品</div>
+                <div class="price">單價</div>
+                <div class="count">數量</div> 
+                <div class="amount">總計</div>
+            </div>
+            
+            {% for i in range(0, order_list|length) %}
+                {% for j in range(0, ((order_have_product_list[i]|length))) %}
+                    <div class="item_header item_body">
+                        <div class="item_detail">
+                            <img src="data:;base64,{{ base64.b64encode(order_have_product_list[i][j][0].image).decode('utf-8') }}" alt="">
+                            <div class="name">{{order_have_product_list[i][j][0].name}}</div>
+                        </div>
+    
+                        <div class="price"><span>$</span>{{order_have_product_list[i][j][0].money}}</div>
+                        {% if order_list[i].order_id  %}
+                        <div class="count">
+                            {{order_have_product_list[i][j][1]}}
+                        </div> 
+                        <div class="amount"> {{order_have_product_list[i][j][0].money * order_have_product_list[i][j][1]}} </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="checkout_button right-align">商品總數:{{ car_amount[i] }}</div>
+                <div class="checkout_button right-align">總金額:{{ car_price[i] }}</div>
+
+                {% for coupon_order in use_coupon_order %}
+                    {% if coupon_order.order_id == order_list[i].order_id %}
+                        <div class="coupon-info">
+                            <div class="checkout_button right-align">優惠卷代碼: {{ coupon_order.coupon_id }}</div>
+                            {% for coupon in coupon_list %}
+                                {% if coupon.coupon_id == coupon_order.coupon_id %}
+                                <div class="checkout_button right-align">折扣後金額: {{ (car_price[i] * coupon.discount) | round  }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</html>
+{% endblock content %}

@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/css/sample.css">
+    </head>
+    <div id="app">
+        <div class="container">
+            <div class="item_header">
+                <div class="item_detail">商品</div>
+                <div class="price">單價</div>
+                <div class="count">數量</div> 
+                <div class="amount">總計</div>
+                <div class="operate">操作</div>
+            </div>
+            
+            {% for car in cars %}
+                {% if car is not none %}
+                    <div class="item_header item_body">
+                        <div class="item_detail">
+                            <img src="data:;base64,{{ base64.b64encode(car.product.image).decode('utf-8') }}" alt="">
+                            <div class="name">{{car.product.name}}</div>
+                        </div>
+    
+                        <div class="price"><span>$</span>{{car.product.money}}</div>
+                        <div class="count">
+                            <button onclick="updateAmount('{{car.product.product_id}}' , 2)">-</button>                      
+                            {{car.amount}}
+                            <button onclick="updateAmount('{{car.product.product_id}}' , 1)">+</button>
+                        </div> 
+                        <div class="amount">{{car.product.money * car.amount}} </div>
+                        <div class="operate">
+                            <button onclick="deleteAmount('{{car.product.product_id}}')">刪除</button>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            
+        <div class="checkout_button right-align">商品總數:{{ car_amount }}</div>
+        <div class="checkout_button right-align total-amount">總金額:{{ car_price }}</div>
+        {% if can_use_coupon_list %}
+            {% for coupon in can_use_coupon_list %}
+                {% if coupon %}
+                    <div class="checkout_button right-align">
+                        <input type="radio" id="use_coupon_{{ coupon.coupon_id }}" name="use_coupon" value="{{ coupon.coupon_id }}">
+                        <label for="use_coupon_{{ coupon.coupon_id }}">使用此優惠券: {{ coupon.discount }} ，期限為 {{ coupon.expire_date }}</label>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="checkout_button right-align">
+                <input type="radio" id="no_coupon" name="use_coupon" value="-1" onclick="refreshPrice()">
+                <label for="no_coupon">不使用優惠券</label>
+            </div>
+        {% endif %}
+
+        
+    </div>
+        {% if cars %}
+        <div class="checkout_button right-align"><button onclick="goCheckout()">結帳</button></div>
+        {% endif %}
+        <script>
+            function updateAmount(productId, change) {
+                console.log('Updating amount for product:', productId, 'with change:', change);
+
+                // 发送 AJAX 请求到服务器更新购物车商品数量
+                fetch(`/update_amount/${productId}/${change}`, { method: 'POST' })
+                    .then(response => {
+                        if (response.ok) {
+                            // 如果成功更新数量，重新加载页面或者更新相关部分的数据
+                            window.location.reload(); // 重新加载整个页面
+                            // 或者更新单个商品的数量显示
+                            // 获取商品数量元素并更新显示
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            function deleteAmount(productId) {
+                // 发送 AJAX 请求到服务器更新购物车商品数量
+                fetch(`/delete_amount/${productId}`, { method: 'POST' })
+                    .then(response => {
+                        if (response.ok) {
+                            // 如果成功更新数量，重新加载页面或者更新相关部分的数据
+                            console.log('datlte for product:', productId);
+                            window.location.reload(); // 重新加载整个页面
+                            // 或者更新单个商品的数量显示
+                            // 获取商品数量元素并更新显示
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            function goCheckout() {
+                // 获取所选优惠券的值
+            const selectedCoupon = document.querySelector('input[name="use_coupon"]:checked');
+            let couponValue = '';
+            if (selectedCoupon) {
+                couponValue = selectedCoupon.value;
+            }
+
+            // 构建跳转 URL，将所选优惠券值作为参数传递
+            const checkoutURL = `/checkout?coupon=${couponValue}`;
+
+            // 跳转到 checkout 页面
+            window.location.href = checkoutURL;
+            }
+
+            const totalAmountElement = document.querySelector('.total-amount');
+            const originalTotalPrice = parseFloat("{{ car_price }}"); // 获取原始总金额
+
+            const radioButtons = document.querySelectorAll('input[name="use_coupon"]');
+            radioButtons.forEach(radioButton => {
+                radioButton.addEventListener('change', () => {
+                    if (radioButton.checked) {
+                        const couponId = radioButton.value; // 获取所选优惠券的ID
+                        
+                        // 发送 AJAX 请求以获取所选优惠券的折扣值
+                        fetch(`/get_discount/${couponId}`) // 假设这是获取折扣值的路由
+                            .then(response => response.json())
+                            .then(data => {
+                                const discount = parseFloat(data.discount || 0); // 假设服务器返回的数据中有折扣值
+
+                                const discountedPrice = Math.round(originalTotalPrice * discount); // 计算应用优惠券后的总金额
+
+                                totalAmountElement.innerText = '總金額:' + discountedPrice.toFixed(2); // 更新显示的总金额
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    }
+                });
+            });
+            
+            function refreshPrice() {
+                // 执行刷新價格的相關代碼
+                const totalAmountElement = document.querySelector('.total-amount');
+                totalAmountElement.innerText = '總金額:' + parseFloat("{{ car_price }}").toFixed(2);
+            }
+        </script>
+    </div>
+</html>
+{% endblock content %}
+
+

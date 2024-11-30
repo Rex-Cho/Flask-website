@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+<div class="container py-0 px-4">
+    <div class="row rounded-lg overflow-hidden shadow">
+    <!-- Users box-->
+    <div class="col-5 px-0">
+        <div class="bg-white">
+
+        <div class="bg-gray px-4 py-2 bg-light">
+            <p class="h5 mb-0 py-1">Account</p>
+        </div>
+            <div class="messages-box">
+                <div class="list-group rounded-0">
+                    {% if users_info %}
+                        {% for user_info in users_info %}
+                            {% if chat_id == user_info.chat_id %}
+                                {% include 'chat_user_selected.html' with context %}
+                            {% else %}
+                                {% include 'chat_user_not_selected.html' with context %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Chat Box-->
+    <div class="col-7 px-0">
+        <div class="px-4 py-5 chat-box bg-white">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.owner_id == user.member_id %}
+                        {% include 'chat_reciever_message.html' with context %}
+                    {% else %}
+                        {% include 'chat_sender_message.html' with context %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Typing area -->
+        <div class="input-group">
+            <form method="post" action="" class="bg-light">
+                {{ form.hidden_tag() }}
+                {{ form.message.label(class="form-label") }}
+                {{ form.message(class="form-control") }}
+                {{ form.submit(class="btn btn-dark") }}
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock content %}

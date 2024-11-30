@@ -1,0 +1,14 @@
+<a href="{{ url_for('chat_list', id = user_info.chat_id) }}" class="list-group-item list-group-item-action active text-white rounded-0">
+    <div class="media">
+        <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle">
+        <p class="mb-0">{{ user_info.name }}</p>
+        <div class="media-body ml-4">
+            <!--
+            <div class="d-flex align-items-center justify-content-between mb-1">
+                <small class="small font-weight-bold">{{ user_info.date }}</small>
+            </div>
+                <p class="font-italic mb-0 text-small">{{ user_info.text }}</p>
+            -->
+        </div>
+    </div>
+</a>

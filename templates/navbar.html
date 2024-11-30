@@ -1,0 +1,96 @@
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container px-4 px-lg-5">
+      <a class="navbar-brand" href="#!">Shopping Website</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+              <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Home</a></li>
+              <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
+              <!--
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#!">All Products</a></li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li><a class="dropdown-item" href="#!">Popular Items</a></li>
+                      <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
+                  </ul>
+              </li>
+              -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% if not current_user.is_authenticated %}
+                        <p class="nav-link">Visitor</p>
+                    {% elif current_user_account_type == 0 %}
+                        <p class="nav-link">Customer</p>
+                    {% elif current_user_account_type == 1 %}
+                        <p class="nav-link">Business</p>
+                    {% else %}
+                        <p class="nav-link">Administrator</p>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="{{ url_for('sign_out') }}">Sign out</a></li>
+                    {% else %}
+                        <li><a class="dropdown-item" href="{{ url_for('sign_in') }}">Sign in</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('sign_up') }}">Sign up</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="{{ url_for('bussiness_sign_up') }}">Start a Business</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+          </ul>
+        {% if not current_user.is_authenticated %}
+            <p class="nav-link">Visitor</p>
+        {% elif current_user_account_type == 0 %}
+            <form class="d-flex" action="{{ url_for('car') }}" method="get">
+                <button class="btn btn-outline-dark" type="submit">
+                    <i class="bi-cart-fill me-1"></i>
+                    Car
+                    <span class="badge bg-dark text-white ms-1 rounded-pill">{{count}}</span>
+                </button>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">    
+                    <li class="nav-item dropdown">
+                        <!--新增-->
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Info</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('chat_list', id = 0) }}">Messages</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('orderHistory') }}">OrderHistory</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('delete_user') }}">Delete User</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </form>
+        {% elif current_user_account_type == 1 %}
+            <form class="d-flex" action="{{ url_for('car') }}" method="get">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">    
+                    <li class="nav-item dropdown">
+                        <!--新增-->
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Info</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('add_product') }}">Add product</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('product_list') }}">My products</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('chat_list', id = 0) }}">Messages</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('delete_user') }}">Delete User</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </form>
+        {% else %}
+            <form class="d-flex" action="{{ url_for('car') }}" method="get">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">    
+                    <li class="nav-item dropdown">
+                        <!--新增-->
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Info</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('create_coupon') }}">Create Coupon</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </form>
+        {% endif %}
+      </div>
+  </div>
+</nav>

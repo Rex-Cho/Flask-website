@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col mb-5">
+    <div class="card h-100">
+        <!-- Product image-->
+        <img class="card-img-top" src="data:;base64,{{ base64.b64encode(item.image).decode('utf-8') }}" alt="..."/>
+        <!-- Product details-->
+        <div class="card-body p-4">
+            <div class="text-center">
+                <!-- Product name-->
+                <h5 class="fw-bolder"><p>{{ item.name }}</p></h5>
+                <!-- Product price-->
+                <p>{{ item.money }}</p>
+                <p>{{ item.detail }}</p>
+                <p>還剩下:{{item.quantity - total_sale }}個</p>
+            </div>
+        </div>
+        <!-- Product actions-->
+        {% if current_user_account_type == 0 %}
+            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                {% if item.quantity - total_sale > 0 %}
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('add_to_cart', item_id=item.product_id) }}">Add To Cart</a></div>
+                {% else %}
+                    <div class="text-center"><p class="text-danger">Out of Stock</p></div>
+                {% endif %}
+                <a class="btn btn-outline-dark btn-sm" href="{{ url_for('start_chat', id = item.business_id) }}">Chat to Seller</a>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+<style>
+    .card-img-top {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+{% endblock content %}
+

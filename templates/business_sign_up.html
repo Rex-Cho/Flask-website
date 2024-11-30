@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    {% if isSignUp %}
+        <h1 class="lead"> Welcome </h1>
+        <a class="lead" href="{{ url_for('index') }}">Back To Home Page</a>
+    {% else %}
+        <h1>Business Sign Up:</h1>
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+            <form method="post" action="">
+                {{ form.hidden_tag() }}
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+                <br>
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control") }}
+                <br>
+                {{ form.birthday.label(class="form-label") }}
+                {{ form.birthday(class="form-control") }}
+                <br>
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+                <br>
+                {{ form.password_check.label(class="form-label") }}
+                {{ form.password_check(class="form-control") }}
+                <br>
+                {{ form.submit(class="btn btn-dark") }}
+            </form>
+        </div>
+    {% endif %}
+{% endblock content %}

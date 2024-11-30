@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% if current_user_account_type == 2 %}
+        <h1>Create Coupon :</h1>
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+            <form method="post" action="">
+                {{ form.hidden_tag() }}
+                {{ form.discount.label(class="form-label") }}
+                {{ form.discount(class="form-control") }}
+                <br>
+                {{ form.expire_date.label(class="form-label") }}
+                {{ form.expire_date(class="form-control") }}
+                <br>
+                {{ form.submit(class="btn btn-dark") }}
+            </form>
+        </div>
+    {% else %}
+        
+    {% endif %}
+{% endblock content %}
